@@ -8,7 +8,7 @@ ArrayList<Integer> colors = new ArrayList<Integer>();
 
 void settings()
 {
-  picture = loadImage("img.jpg");
+  picture = loadImage("ein.jpg");
   size(picture.width, picture.height);
 }
 
