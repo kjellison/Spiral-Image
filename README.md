@@ -8,3 +8,4 @@ you want to render. Read the Processing notes for image types that are compatibl
 It will take a few seconds to render depending on the size of the image.
 
 Press 's' to save a PNG of the rendered image.
+Press 'o' to output lasergrbl style g-code. (Not tested, no gaurantee it will not burn down your house or even work).
