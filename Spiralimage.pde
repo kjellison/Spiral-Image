@@ -5,10 +5,19 @@ PVector spiralpoint;
 PImage picture;
 ArrayList<PVector> spoints = new ArrayList<PVector>();
 ArrayList<Integer> colors = new ArrayList<Integer>();
+float engwidth;
+float engheight;
+float ppmmwidth;
+float ppmmheight;
+ArrayList<PVector> gcodepoints = new ArrayList<PVector>();
+PrintWriter gcode;
+float feedrate;
+int minlaser;
+int maxlaser;
 
 void settings()
 {
-  picture = loadImage("ein.jpg");
+  picture = loadImage("ada.jpg");
   size(picture.width, picture.height);
 }
 
@@ -17,6 +26,14 @@ void setup() {
   picture.loadPixels();
   picture.filter(GRAY);
   spiralpoint = new PVector(r * cos(theta)+picture.width/2, r * sin(theta)+picture.height/2);
+  engwidth = 150;
+  engheight = 150;
+  ppmmwidth = width/engwidth;
+  ppmmheight = height/engheight;
+  gcode = createWriter("gcode.txt");
+  feedrate = 800;
+  minlaser = 0;
+  maxlaser = 1000;
 }
 
 void draw() {
@@ -29,6 +46,9 @@ void draw() {
 
     color pixelcolor = picture.get((int)spiralpoint.x, (int)spiralpoint.y);
     colors.add(pixelcolor);
+    
+    PVector gpoint = new PVector(spiralpoint.x*ppmmwidth, spiralpoint.y*ppmmheight, map(red(pixelcolor), 0, 255, maxlaser, minlaser));
+    gcodepoints.add(gpoint);
 
     theta += 0.001;
     r += 0.001;
@@ -47,5 +67,24 @@ void keyPressed()
   if (key == 's')
   {
     save("spiral.png");
+    println("Saved");
+  }
+  if (key == 'o')
+  {
+    gcode.println("G90");
+    gcode.println("M5 S"+(int)gcodepoints.get(0).z);
+    gcode.println("G1 F"+feedrate);
+    gcode.println("G0 X"+gcodepoints.get(0).x+" Y"+gcodepoints.get(0).y);
+    gcode.println("M4");
+    for (int i = 1; i < gcodepoints.size(); i++)
+    {
+      PVector pnt = gcodepoints.get(i);
+      gcode.println("G1 X"+pnt.x+" Y"+pnt.y+" S"+(int)pnt.z);
+    }
+    gcode.println("M5");
+    gcode.println("G0 X0 Y0 Z0");
+    gcode.flush();
+    gcode.close();
+    println("Gcode saved");
   }
 }
