@@ -33,18 +33,18 @@ void setup() {
   //Start in the middle
   spiralpoint = new PVector(r * cos(theta)+picture.width/2, r * sin(theta)+picture.height/2);
   
-  //Physical size of engraving in millimeters
-  engwidth = 150;
-  engheight = 150;
+  //Physical size of engraving in millimeters Bigger number is smaller will fix later
+  engwidth = 500;
+  engheight = 500;
   
   //Pixels per millimeter
   ppmmwidth = width/engwidth;
   ppmmheight = height/engheight;
-  gcode = createWriter("gcode.txt");
+  gcode = createWriter("gcode.nc");
   
   //Adjustments for the laser
-  feedrate = 800;
-  minlaser = 0;
+  feedrate = 1200;
+  minlaser = 200;
   maxlaser = 1000;
 }
 
@@ -64,7 +64,7 @@ void draw() {
     gcodepoints.add(gpoint);
 
     theta += 0.001;
-    r += 0.001;
+    r += 0.0001;
   }
   strokeWeight(1);
 
@@ -85,7 +85,7 @@ void keyPressed()
   if (key == 's')
   {
     save("spiral.png");
-    println("Saved");
+    println("Image Saved");
   }
   if (key == 'o')
   {
